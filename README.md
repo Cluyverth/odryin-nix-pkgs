@@ -1,4 +1,4 @@
-# 📦 cluyverth-nix-pkgs
+# 📦 cluyverth-nur-packages
 
 **Custom Nix packages, derivations, and overlays maintained by @cluyverth.**
 
@@ -30,8 +30,8 @@ let
   # 1. Import the NUR tool
   nur = builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz";
 
-  # 2. Load the packages from Cluyverth's repository (cluyverth-nix-pkgs)
-  cluyverthPkgs = import "${nur}/repos/cluyverth/cluyverth-nix-pkgs" { inherit pkgs; };
+  # 2. Load the packages from Cluyverth's repository (nur-packages)
+  cluyverthPkgs = import "${nur}/repos/cluyverth/nur-packages" { inherit pkgs; };
 
 in
 {
@@ -52,7 +52,7 @@ nixpkgs.overlays = [
   (final: prev: {
     # Imports packages from this repository (username is cluyverth)
     cluyverth-pkgs = import (
-      builtins.fetchTarball "https://github.com/cluyverth/cluyverth-nix-pkgs/archive/main.tar.gz"
+      builtins.fetchTarball "https://github.com/cluyverth/nur-packages/archive/main.tar.gz"
     ) { pkgs = prev; };
     
     # Expose the Helium package directly

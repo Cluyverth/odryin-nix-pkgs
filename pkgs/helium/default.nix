@@ -1,6 +1,8 @@
-{ lib, stdenv, fetchurl, appimageTools, ... }:
+{ lib, stdenv, pkgs }:
 
 let
+  inherit (pkgs) fetchurl appimageTools;
+  
   pname = "helium";
   version = "0.6.7.1";
   
@@ -8,11 +10,11 @@ let
   assetMap = {
     "x86_64-linux" = {
       assetName = "helium-${version}-x86_64.AppImage";
-      hash = "sha256-fZTBNhaDk5EeYcxZDJ83tweMZqtEhd7ws8AFUcHjFLs=";
+      hash = "sha256-1fqlwg0m21f0ngqdx1a4mdk8q1xp6yghqnfcc4g934w32qvc353x"; # CORRIGIDO
     };
     "aarch64-linux" = {
       assetName = "helium-${version}-arm64.AppImage";
-      hash = "sha256-fZTBNhaDk5EeYcxZDJ83tweMZqtEhd7ws8AFUcHjFLs=";
+      hash = "sha256-1wqfk42lrvqnmgfkpvdv9ma8frzp0jzihnw7mgcy2iy3ma80m8km"; # CORRIGIDO
     };
   };
   
@@ -72,6 +74,5 @@ appimageTools.wrapType2 {
     license = licenses.gpl3; 
     platforms = [ "x86_64-linux" "aarch64-linux" ];
     mainProgram = "helium";
-    maintainers = [ maintainers.cluyverth ];
   };
 }
