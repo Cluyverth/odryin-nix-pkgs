@@ -4,6 +4,7 @@
 ![Build Status](https://img.shields.io/github/actions/workflow/status/cluyverth/nur-packages/build.yml?style=for-the-badge&label=Build&logo=github)
 [![License](https://img.shields.io/github/license/cluyverth/nur-packages?style=for-the-badge)](LICENSE)
 [![NUR Status](https://img.shields.io/website?down_message=Not%20Indexed&down_color=red&label=NUR&up_message=Indexed&up_color=green&url=https%3A%2F%2Fnur.nix-community.org%2Frepos%2Fcluyverth%2F&style=for-the-badge&logo=nixos&logoColor=white)](https://nur.nix-community.org/repos/cluyverth/)
+![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)
 
 **Custom Nix packages, derivations, and overlays maintained by [@cluyverth](https://github.com/cluyverth).**
 
