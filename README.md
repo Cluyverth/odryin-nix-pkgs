@@ -1,84 +1,109 @@
-# 📦 cluyverth-nur-packages
+# ❄️ Cluyverth's NUR Packages
 
-**Custom Nix packages, derivations, and overlays maintained by @cluyverth.**
+![NixOS](https://img.shields.io/badge/NixOS-23.11+-5277C3.svg?style=for-the-badge&logo=nixos&logoColor=white)
+![Build Status](https://img.shields.io/github/actions/workflow/status/cluyverth/nur-packages/build.yml?style=for-the-badge&label=Build&logo=github)
+![License](https://img.shields.io/github/license/cluyverth/nur-packages?style=for-the-badge)
+![NUR Status](https://img.shields.io/badge/NUR-Indexed-green?style=for-the-badge)
 
-This repository functions as a **NUR (Nix User Repository)** channel, providing packages that are either not yet in the official `nixpkgs` repository or are custom-tailored versions.
+**Custom Nix packages, derivations, and overlays maintained by [@cluyverth](https://github.com/cluyverth).**
 
----
+This repository functions as a **NUR (Nix User Repository)** channel. It provides high-quality packages that are either not yet available in the official `nixpkgs` or are custom-tailored versions for specific needs.
 
-## 🎯 Repository Scope
+## 📦 Available Packages
 
-The packages here are primarily maintained by **Cluyverth** for **personal use** on NixOS.
+| Package | Version | Description | Architectures |
+| :--- | :--- | :--- | :--- |
+| **[helium](./pkgs/helium)** | `0.6.7.1` | Helium Browser: Internet without interruptions. A floating browser window. | `x86_64` `aarch64` |
+| *(More coming)* | ... | ... | ... |
 
-However, the repository is open to **community contributions**. Any package submitted via a Pull Request will be maintained as part of this collection, provided it meets the Nix standards and quality checks.
+## 🚀 Installation
 
-## ✨ Highlights
+You can install packages from this repository using **Nix Flakes**, **NUR**, or **Legacy Channels**.
 
-* **Personalized Packages:** Packages specifically tailored and configured for Cluyverth's daily usage environment.
-* **Community Contributions:** Welcoming packages and updates via Pull Requests from the community.
+### Option A: Using Nix Flakes (Recommended)
 
-## 🚀 How to Use
-
-To install packages from this repository, you need to include it in your Nix configuration, typically as a NUR channel.
-
-### Using with NUR (Recommended)
+Add this repository to your `flake.nix` inputs:
 
 ```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    
+    # Add cluyverth's NUR
+    cluyverth-nur.url = "github:cluyverth/nur-packages";
+  };
+
+  outputs = { self, nixpkgs, cluyverth-nur, ... }: {
+    nixosConfigurations.my-machine = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        ({ pkgs, ... }: {
+          environment.systemPackages = [
+            cluyverth-nur.packages.${pkgs.system}.helium
+          ];
+        })
+      ];
+    };
+  };
+}
+```
+
+### Option B: Using the NUR Overlay
+
+If you use the main [NUR repository](https://github.com/nix-community/NUR), my packages are available under the `cluyverth` namespace.
+
+```nix
+# In your configuration.nix
 { config, pkgs, ... }:
 
 let
-  # 1. Import the NUR tool
-  nur = builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz";
-
-  # 2. Load the packages from Cluyverth's repository (nur-packages)
-  cluyverthPkgs = import "${nur}/repos/cluyverth/nur-packages" { inherit pkgs; };
-
+  nur-no-pkgs = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {};
 in
 {
-  # ... (rest of your configuration)
+  imports = [
+    # ...
+  ];
 
-  environment.systemPackages = with pkgs // cluyverthPkgs; [
-    # Your package is now available!
-    helium
-    # other packages...
+  environment.systemPackages = [
+    # Access packages via nur.repos.cluyverth
+    nur-no-pkgs.repos.cluyverth.helium
   ];
 }
 ```
 
-### Alternative: Using as a Direct Overlay
+### Option C: Legacy / Direct Import
+
+Useful for testing or if you don't use Flakes/NUR directly.
 
 ```nix
-nixpkgs.overlays = [
-  (final: prev: {
-    # Imports packages from this repository (username is cluyverth)
-    cluyverth-pkgs = import (
-      builtins.fetchTarball "https://github.com/cluyverth/nur-packages/archive/main.tar.gz"
-    ) { pkgs = prev; };
-    
-    # Expose the Helium package directly
-    helium = final.cluyverth-pkgs.helium;
-  })
-];
+let
+  cluyverthPkgs = import (builtins.fetchTarball "https://github.com/cluyverth/nur-packages/archive/main.tar.gz") {
+    pkgs = pkgs;
+  };
+in
+{
+  environment.systemPackages = [
+    cluyverthPkgs.helium
+  ];
+}
 ```
 
-## 📦 Available Packages
+## 🛠️ Development & CI
 
-| Package Name | Description | Status |
-| :--- | :--- | :--- |
-| `helium` | Helium Browser: Internet without interruptions. | ✅ V0.6.7.1 |
-| `[NEXT_PACKAGE]` | (Add other packages here) | ⚙️ In Development |
+This repository is automatically tested and built using GitHub Actions to ensure package integrity across supported architectures.
 
----
+To build a package locally:
 
-## 🤝 Contribution
+```bash
+# Build Helium
+nix-build -A helium
+```
 
-Feel free to open an Issue or submit a Pull Request. Contributions are highly encouraged and welcome!
+## 🤝 Contributing
 
-* Clone the repository.
-* Create a new feature branch (`git checkout -b feature/my-new-package`).
-* Commit your changes.
-* Open a Pull Request.
+Contributions are highly encouraged! If you have a package request or a fix:
 
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+1.  Fork the repository.
+2.  Create a feature branch (`git checkout -b feat/new-package`).
+3.  Commit your changes.
+4.  Open a Pull Request.
